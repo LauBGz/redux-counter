@@ -1,27 +1,25 @@
-import * as actionTypes from '../actions';
+import * as actionTypes from '../actions/actionTypes';
+import {updatedObject} from '../utility';
 
 const initialState = {
     results: []
+};
+
+const deleteResult = (state, action) => {
+    const updatedArray = state.results.filter(result => result.id !== action.resultElId);
+    return updatedObject(state, { results: updatedArray});
 };
 
 const reducer = (state = initialState, action) => {
     switch ( action.type ) 
     {
         case actionTypes.STORE_RESULT:
-            return {
-                ...state,
-                results: state.results.concat({id: new Date(), value: action.result})
-            } 
+            return updatedObject(state, { results: state.results.concat({id: new Date(), value: action.result}) }) 
         case actionTypes.DELETE_RESULT:
-            const updatedArray = state.results.filter(result => result.id !== action.resultElId)
-            return {
-                ...state,
-                results: updatedArray
-            } 
+            return deleteResult(state, action);
     }
-    return state;//Si no entra en ninguno de los casos tenemos este return que retornaría el estado inicial
-    //igualado por defecto al principio. Esto es importante porque si ningún dispatch coincide la aplicación
-    //no se rompe, simplemente devuelve el estado actual.
+    return state;
 };
 
 export default reducer;
+
